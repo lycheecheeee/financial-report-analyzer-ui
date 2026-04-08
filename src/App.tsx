@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Lock, LogOut, FileUp, Download, BarChart3, Zap } from 'lucide-react';
+import { LogOut, FileUp, Download, BarChart3, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import './index.css';
@@ -102,10 +102,8 @@ function LoginPage({ onLogin }: { onLogin: (username: string) => void }) {
 // Main App Component
 function Dashboard({ username, onLogout }: { username: string; onLogout: () => void }) {
   const [files, setFiles] = useState<File[]>([]);
-  const [uploading, setUploading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const [results, setResults] = useState<any>(null);
-  const [remarks, setRemarks] = useState<Record<string, string>>({});
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newFiles = Array.from(e.target.files || []);
@@ -117,9 +115,6 @@ function Dashboard({ username, onLogout }: { username: string; onLogout: () => v
     try {
       const formData = new FormData();
       files.forEach(file => formData.append('files', file));
-      Object.entries(remarks).forEach(([filename, remark]) => {
-        formData.append(`remark_${filename}`, remark);
-      });
 
       const response = await axios.post('http://localhost:5000/api/analyze', formData);
       setResults(response.data);
